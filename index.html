@@ -29,7 +29,9 @@
             </section>
 
             <section class="scenario-section">
-                <h3>💡 Escenario de Práctica</h3>
+                <h3>💡 Escenario de Práctica
+                    <button id="help-button" class="help-button hidden">❓ Pedir Pista</button> 
+                </h3>
                 <p id="scenario-text" class="challenge-text"></p>
                 
                 <div class="code-editor-container">
@@ -39,6 +41,9 @@
                     </div>
                     <textarea id="code-input" class="code-input" placeholder="# Escribe tu código Python aquí..."></textarea>
                 </div>
+
+                <div id="hint-container" class="hint-container hidden">
+                    </div>
 
                 <div id="feedback" class="feedback">
                     </div>
