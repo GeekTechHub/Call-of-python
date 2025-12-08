@@ -1,13 +1,13 @@
-// --- 1. Base de Datos de Escenarios (Content Initial) ---
+// --- 1. Base de Datos de Escenarios (Mantenemos la estructura) ---
 const lessons = [
     {
         id: 0,
         title: "Introducción",
         key: "intro",
         theory: "¡Bienvenido a tu curso interactivo de Python! Python es un lenguaje de programación de alto nivel, interpretado y de propósito general. Es conocido por su sintaxis clara y legible, lo que lo hace perfecto para principiantes.",
-        scenario: null, // No hay escenario de código para la introducción
+        scenario: null,
         solution: null,
-        hint: null
+        hint: null // La introducción no necesita pista
     },
     {
         id: 1,
@@ -18,13 +18,10 @@ const lessons = [
         solution: `
             edad = 25
             print(edad)
-        `.trim(), // Solución correcta
-        hint: "Asegúrate de no usar comillas alrededor de 25, ya que es un número (entero).",
+        `.trim(),
+        hint: "Recuerda que para asignar un valor se usa el signo igual (`=`). La sintaxis debe ser `nombre_variable = valor`.", // Pista clave
         validator: (userInput) => {
-            // Validación simulada de JavaScript:
-            // 1. Verificar si la asignación 'edad = 25' está presente.
             const hasAssignment = /edad\s*=\s*25/.test(userInput);
-            // 2. Verificar si se imprime la variable.
             const hasPrint = /print\s*\(\s*edad\s*\)/.test(userInput);
 
             if (!hasAssignment) {
@@ -46,12 +43,9 @@ const lessons = [
             nombre = "Carlos" 
             print("Hola, " + nombre)
         `.trim(),
-        hint: "Recuerda que la concatenación requiere el signo `+` entre el string literal ('Hola, ') y la variable `nombre`.",
+        hint: "Para unir el texto 'Hola, ' con tu variable `nombre`, debes usar la función `print('Hola, ' + nombre)`.", // Pista clave
         validator: (userInput) => {
-            // 1. Verificar si hay una asignación a la variable 'nombre'
             const hasNameAssignment = /nombre\s*=\s*("|').*("|')/.test(userInput);
-            // 2. Verificar la impresión con concatenación
-            // Busca algo como print(...) y dentro que tenga una concatenación de un string con 'nombre'
             const hasConcatenationPrint = /print\s*\((.*)\s*\+\s*nombre\s*\)/.test(userInput) || /print\s*\(\s*nombre\s*\+\s*(.*)\)/.test(userInput);
 
             if (!hasNameAssignment) {
@@ -76,10 +70,8 @@ const lessons = [
             else:
                 print('Es pequeño')
         `.trim(),
-        hint: "Recuerda la sintaxis: `if condicion:` y `else:`. ¡No olvides los dos puntos (`:`)!",
+        hint: "La condición de tu `if` debe usar el operador mayor que (`>`). ¡No olvides los dos puntos (`:`) después de `if` y `else`!", // Pista clave
         validator: (userInput) => {
-            // Nota: Esta validación es más compleja, ya que la indentación es clave en Python.
-            // Buscamos patrones esenciales ignorando la indentación estricta y el valor inicial de la variable (aunque se puede verificar el valor inicial 15).
             const hasIfCondition = /if\s+numero\s*(>|>=)\s*10\s*:/is.test(userInput);
             const hasPrintLarge = /print\s*\(\s*('|")Es grande('|")\s*\)/is.test(userInput);
             const hasElse = /else\s*:/is.test(userInput);
@@ -101,13 +93,12 @@ const lessons = [
             return { success: true, message: "✅ ¡Perfecto! Dominas las condicionales y has programado tu primera decisión." };
         }
     }
-    // Aquí se añadirían más lecciones (Bucles, Listas, Funciones, etc.)
 ];
 
-// --- 2. Variables de Estado ---
-let currentLessonId = 0; // Índice de la lección actual
+// --- 2. Variables de Estado y Referencias del DOM ---
+let currentLessonId = 0;
 
-// --- 3. Referencias del DOM ---
+// Referencias existentes
 const lessonListUl = document.getElementById('lesson-list');
 const topicTitle = document.getElementById('topic-title');
 const theoryText = document.getElementById('theory-text');
@@ -117,19 +108,23 @@ const runButton = document.getElementById('run-button');
 const nextButton = document.getElementById('next-button');
 const feedbackDiv = document.getElementById('feedback');
 
+// ¡NUEVAS REFERENCIAS para la Guía!
+const helpButton = document.getElementById('help-button');
+const hintContainer = document.getElementById('hint-container');
 
-// --- 4. Funciones de Lógica de la Aplicación ---
+
+// --- 3. Funciones de Lógica de la Aplicación (Actualizadas) ---
 
 /**
  * Carga el contenido de la lección dada en el área principal.
+ * Se actualiza para manejar los elementos de Pista/Guía.
  * @param {number} id - El ID de la lección.
  */
 function loadLesson(id) {
-    // 1. Actualizar el estado
     currentLessonId = id;
     const lesson = lessons[id];
 
-    // 2. Actualizar la Navegación (Resaltar tema actual)
+    // ... (Código de actualización de navegación omitido por brevedad) ...
     document.querySelectorAll('#lesson-list li').forEach(li => {
         li.classList.remove('active');
         if (parseInt(li.dataset.id) === id) {
@@ -137,25 +132,34 @@ function loadLesson(id) {
         }
     });
 
-    // 3. Actualizar el Área de Contenido
+    // 1. Actualizar el Área de Contenido
     topicTitle.textContent = lesson.title;
     theoryText.innerHTML = lesson.theory;
     
-    // 4. Actualizar el Escenario de Práctica
+    // 2. Manejo del Escenario de Práctica y la Guía
     if (lesson.scenario) {
         scenarioText.textContent = lesson.scenario;
-        codeInput.value = lesson.solution || ''; // Opcional: mostrar una solución si no hay entrada
+        codeInput.value = ''; 
         codeInput.removeAttribute('readonly');
         runButton.style.display = 'inline-block';
         scenarioText.closest('.scenario-section').style.display = 'block';
+        
+        // **NUEVO:** Mostrar/Ocultar el botón de pista y limpiar la pista anterior
+        if (lesson.hint) {
+            helpButton.style.display = 'inline-block';
+        } else {
+            helpButton.style.display = 'none';
+        }
+        hintContainer.classList.add('hidden'); // Ocultar la pista al cargar la lección
+        hintContainer.innerHTML = ''; // Limpiar el contenido de la pista
+
     } else {
-        // Ocultar sección de escenario si no aplica (ej. Introducción)
         scenarioText.closest('.scenario-section').style.display = 'none';
         runButton.style.display = 'none';
+        helpButton.style.display = 'none'; // También ocultamos el botón de ayuda
     }
     
-    // 5. Limpiar y Ocultar elementos de control
-    codeInput.value = ''; // Limpiar el editor para el nuevo desafío
+    // 3. Limpiar elementos de control
     feedbackDiv.textContent = '';
     feedbackDiv.className = 'feedback';
     nextButton.classList.add('hidden');
@@ -168,7 +172,6 @@ function loadLesson(id) {
 function validateCode() {
     const lesson = lessons[currentLessonId];
     if (!lesson.validator) {
-        // No hay validador para esta lección (ej. Introducción)
         feedbackDiv.textContent = "No hay un desafío de código para esta lección. ¡Presiona Siguiente!";
         feedbackDiv.className = 'feedback success';
         nextButton.classList.remove('hidden');
@@ -179,36 +182,42 @@ function validateCode() {
     
     // Simulación de la ejecución (limpieza de espacios y comentarios)
     const cleanInput = userInput
-        .replace(/\/\*[\s\S]*?\*\/|\/\/.*/g,'') // Remover comentarios JS (si el usuario los usa)
-        .replace(/#.*/g, '') // Remover comentarios Python
-        .replace(/\s+/g, ' ') // Normalizar espacios
+        .replace(/\/\*[\s\S]*?\*\/|\/\/.*/g,'') 
+        .replace(/#.*/g, '') 
+        .replace(/\s+/g, ' ') 
         .trim();
 
-    // Ejecutar la función de validación específica de la lección
     const validationResult = lesson.validator(cleanInput);
 
     // Mostrar retroalimentación
     feedbackDiv.textContent = validationResult.message;
     if (validationResult.success) {
         feedbackDiv.className = 'feedback success';
-        // Mostrar botón de avance si es correcto
-        if (currentLessonId < lessons.length - 1) {
-            nextButton.classList.remove('hidden');
-        } else {
-            nextButton.textContent = "¡Curso Terminado!";
-            nextButton.classList.remove('hidden');
-            runButton.style.display = 'none'; // Desactivar el botón
-        }
+        nextButton.classList.remove('hidden');
+        runButton.disabled = true; // Desactivar el botón "Ejecutar" tras el éxito
+        helpButton.style.display = 'none'; // Ocultar la pista al resolver
+        hintContainer.classList.add('hidden');
     } else {
         feedbackDiv.className = 'feedback error';
-        nextButton.classList.add('hidden'); // Ocultar el botón si es incorrecto
+        nextButton.classList.add('hidden'); 
+        runButton.disabled = false; // Asegurar que pueda reintentar
     }
 }
 
 
 /**
- * Inicializa la barra lateral de navegación.
+ * **NUEVA FUNCIÓN:** Muestra la pista de la lección actual.
  */
+function showHint() {
+    const lesson = lessons[currentLessonId];
+    if (lesson && lesson.hint) {
+        hintContainer.innerHTML = `<p>👉 **PISTA:** ${lesson.hint}</p>`;
+        hintContainer.classList.remove('hidden');
+    }
+}
+
+
+// ... (initializeLessonList y goToNextLesson se mantienen sin cambios) ...
 function initializeLessonList() {
     lessons.forEach(lesson => {
         const li = document.createElement('li');
@@ -221,31 +230,22 @@ function initializeLessonList() {
     });
 }
 
-
-/**
- * Avanza a la siguiente lección.
- */
 function goToNextLesson() {
     if (currentLessonId < lessons.length - 1) {
         loadLesson(currentLessonId + 1);
-        // Desplazar el scroll al inicio del contenido en móviles
         window.scrollTo(0, 0); 
     }
 }
 
-// --- 5. Inicialización y Event Listeners ---
+// --- 4. Inicialización y Event Listeners (Actualizados) ---
 
 document.addEventListener('DOMContentLoaded', () => {
-    initializeLessonList(); // Construir la lista de temas
-    loadLesson(currentLessonId); // Cargar el primer tema al inicio
+    initializeLessonList(); 
+    loadLesson(currentLessonId);
     
     runButton.addEventListener('click', validateCode);
     nextButton.addEventListener('click', goToNextLesson);
 
-    // Deseable: Simulación de Highlighting Básico para Python
-    // Esto es un esfuerzo simple, un editor real (como CodeMirror o Monaco) sería mejor.
-    codeInput.addEventListener('input', () => {
-        // Para una implementación real se requeriría un div de contenido y superponer el texto.
-        // Aquí solo simulamos un efecto visual básico de 'monospace' que ya está en el CSS.
-    });
+    // **NUEVO Event Listener para la ayuda**
+    helpButton.addEventListener('click', showHint);
 });
