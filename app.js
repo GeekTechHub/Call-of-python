@@ -1,13 +1,13 @@
-// --- 1. Base de Datos de Escenarios (Mantenemos la estructura) ---
+// --- 1. Base de Datos de Escenarios ---
 const lessons = [
     {
         id: 0,
         title: "Introducción",
         key: "intro",
         theory: "¡Bienvenido a tu curso interactivo de Python! Python es un lenguaje de programación de alto nivel, interpretado y de propósito general. Es conocido por su sintaxis clara y legible, lo que lo hace perfecto para principiantes.",
-        scenario: null,
+        scenario: null, // No hay escenario de código para la introducción
         solution: null,
-        hint: null // La introducción no necesita pista
+        hint: null
     },
     {
         id: 1,
@@ -18,9 +18,10 @@ const lessons = [
         solution: `
             edad = 25
             print(edad)
-        `.trim(),
+        `.trim(), // Solución correcta (para referencia)
         hint: "Recuerda que para asignar un valor se usa el signo igual (`=`). La sintaxis debe ser `nombre_variable = valor`.", // Pista clave
         validator: (userInput) => {
+            // Validación simulada de JavaScript:
             const hasAssignment = /edad\s*=\s*25/.test(userInput);
             const hasPrint = /print\s*\(\s*edad\s*\)/.test(userInput);
 
@@ -96,7 +97,7 @@ const lessons = [
 ];
 
 // --- 2. Variables de Estado y Referencias del DOM ---
-let currentLessonId = 0;
+let currentLessonId = 0; 
 
 // Referencias existentes
 const lessonListUl = document.getElementById('lesson-list');
@@ -113,7 +114,7 @@ const helpButton = document.getElementById('help-button');
 const hintContainer = document.getElementById('hint-container');
 
 
-// --- 3. Funciones de Lógica de la Aplicación (Actualizadas) ---
+// --- 3. Funciones de Lógica de la Aplicación ---
 
 /**
  * Carga el contenido de la lección dada en el área principal.
@@ -124,7 +125,7 @@ function loadLesson(id) {
     currentLessonId = id;
     const lesson = lessons[id];
 
-    // ... (Código de actualización de navegación omitido por brevedad) ...
+    // 1. Actualizar la Navegación (Resaltar tema actual)
     document.querySelectorAll('#lesson-list li').forEach(li => {
         li.classList.remove('active');
         if (parseInt(li.dataset.id) === id) {
@@ -132,23 +133,24 @@ function loadLesson(id) {
         }
     });
 
-    // 1. Actualizar el Área de Contenido
+    // 2. Actualizar el Área de Contenido
     topicTitle.textContent = lesson.title;
     theoryText.innerHTML = lesson.theory;
     
-    // 2. Manejo del Escenario de Práctica y la Guía
+    // 3. Manejo del Escenario de Práctica y la Guía
     if (lesson.scenario) {
         scenarioText.textContent = lesson.scenario;
         codeInput.value = ''; 
         codeInput.removeAttribute('readonly');
         runButton.style.display = 'inline-block';
+        runButton.disabled = false; // Habilitar el botón de ejecución
         scenarioText.closest('.scenario-section').style.display = 'block';
         
         // **NUEVO:** Mostrar/Ocultar el botón de pista y limpiar la pista anterior
         if (lesson.hint) {
-            helpButton.style.display = 'inline-block';
+            helpButton.classList.remove('hidden');
         } else {
-            helpButton.style.display = 'none';
+            helpButton.classList.add('hidden');
         }
         hintContainer.classList.add('hidden'); // Ocultar la pista al cargar la lección
         hintContainer.innerHTML = ''; // Limpiar el contenido de la pista
@@ -156,10 +158,10 @@ function loadLesson(id) {
     } else {
         scenarioText.closest('.scenario-section').style.display = 'none';
         runButton.style.display = 'none';
-        helpButton.style.display = 'none'; // También ocultamos el botón de ayuda
+        helpButton.classList.add('hidden'); 
     }
     
-    // 3. Limpiar elementos de control
+    // 4. Limpiar elementos de control
     feedbackDiv.textContent = '';
     feedbackDiv.className = 'feedback';
     nextButton.classList.add('hidden');
@@ -182,9 +184,9 @@ function validateCode() {
     
     // Simulación de la ejecución (limpieza de espacios y comentarios)
     const cleanInput = userInput
-        .replace(/\/\*[\s\S]*?\*\/|\/\/.*/g,'') 
-        .replace(/#.*/g, '') 
-        .replace(/\s+/g, ' ') 
+        .replace(/\/\*[\s\S]*?\*\/|\/\/.*/g,'') // Remover comentarios JS
+        .replace(/#.*/g, '') // Remover comentarios Python
+        .replace(/\s+/g, ' ') // Normalizar espacios
         .trim();
 
     const validationResult = lesson.validator(cleanInput);
@@ -195,18 +197,18 @@ function validateCode() {
         feedbackDiv.className = 'feedback success';
         nextButton.classList.remove('hidden');
         runButton.disabled = true; // Desactivar el botón "Ejecutar" tras el éxito
-        helpButton.style.display = 'none'; // Ocultar la pista al resolver
+        helpButton.classList.add('hidden'); // Ocultar la pista al resolver
         hintContainer.classList.add('hidden');
     } else {
         feedbackDiv.className = 'feedback error';
         nextButton.classList.add('hidden'); 
-        runButton.disabled = false; // Asegurar que pueda reintentar
+        runButton.disabled = false; 
     }
 }
 
 
 /**
- * **NUEVA FUNCIÓN:** Muestra la pista de la lección actual.
+ * Muestra la pista de la lección actual.
  */
 function showHint() {
     const lesson = lessons[currentLessonId];
@@ -217,7 +219,9 @@ function showHint() {
 }
 
 
-// ... (initializeLessonList y goToNextLesson se mantienen sin cambios) ...
+/**
+ * Inicializa la barra lateral de navegación.
+ */
 function initializeLessonList() {
     lessons.forEach(lesson => {
         const li = document.createElement('li');
@@ -230,6 +234,10 @@ function initializeLessonList() {
     });
 }
 
+
+/**
+ * Avanza a la siguiente lección.
+ */
 function goToNextLesson() {
     if (currentLessonId < lessons.length - 1) {
         loadLesson(currentLessonId + 1);
@@ -237,15 +245,15 @@ function goToNextLesson() {
     }
 }
 
-// --- 4. Inicialización y Event Listeners (Actualizados) ---
+// --- 4. Inicialización y Event Listeners ---
 
 document.addEventListener('DOMContentLoaded', () => {
-    initializeLessonList(); 
-    loadLesson(currentLessonId);
+    initializeLessonList(); // Construir la lista de temas
+    loadLesson(currentLessonId); // Cargar el primer tema al inicio
     
     runButton.addEventListener('click', validateCode);
     nextButton.addEventListener('click', goToNextLesson);
 
-    // **NUEVO Event Listener para la ayuda**
+    // Event Listener para la ayuda
     helpButton.addEventListener('click', showHint);
 });
