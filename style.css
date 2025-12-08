@@ -104,9 +104,12 @@ body {
     margin-bottom: 30px;
 }
 
-.theory-section h3, .scenario-section h3 {
+/* Estilo para el encabezado del escenario y el botón de ayuda */
+.scenario-section h3 {
     color: var(--secondary-color);
     margin-bottom: 10px;
+    display: flex;
+    align-items: center; /* Asegura que el texto y el botón estén alineados */
 }
 
 .challenge-text {
@@ -186,6 +189,35 @@ body {
     border: 1px solid var(--error-color);
 }
 
+/* Botón de Ayuda (NUEVO) */
+.help-button {
+    background-color: #607d8b; /* Gris azulado */
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+    margin-left: 15px; /* Espaciado con el título */
+    transition: background-color 0.2s;
+}
+
+.help-button:hover {
+    background-color: #455a64;
+}
+
+/* Contenedor de Pista (NUEVO) */
+.hint-container {
+    padding: 15px;
+    margin-top: 15px;
+    border: 1px solid #ffcc80; /* Tono de naranja claro */
+    background-color: #fff8e1; /* Fondo muy claro */
+    color: var(--secondary-color);
+    border-radius: 4px;
+    font-size: 0.95em;
+}
+
+
 /* Botón de Avance */
 .next-button {
     background-color: var(--primary-color);
@@ -232,5 +264,15 @@ body {
     .content-area {
         margin-left: 0;
         padding: 20px;
+    }
+
+    .scenario-section h3 {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .help-button {
+        margin-left: 0;
+        margin-top: 5px;
     }
 }
