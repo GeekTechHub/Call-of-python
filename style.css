@@ -1,1 +1,236 @@
+/* Variables de Color */
+:root {
+    --primary-color: #3f51b5; /* Azul oscuro para acentos */
+    --secondary-color: #ff9800; /* Naranja vibrante para botones */
+    --background-color: #f4f7f6; /* Fondo claro */
+    --content-bg-color: #ffffff; /* Fondo del contenido */
+    --code-bg-color: #272822; /* Fondo del editor de código (Monokai-like) */
+    --text-color: #333333; /* Texto oscuro principal */
+    --success-color: #4CAF50; /* Verde */
+    --error-color: #F44336; /* Rojo */
+}
 
+/* Base y Tipografía */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    line-height: 1.6;
+    background-color: var(--background-color);
+    color: var(--text-color);
+}
+
+/* Encabezado */
+.header {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.header h1 {
+    font-size: 2em;
+    margin-bottom: 5px;
+}
+
+/* Contenedor Principal de la Aplicación */
+.app-container {
+    display: flex;
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 0 20px;
+}
+
+/* Barra Lateral (Sidebar) */
+.sidebar {
+    width: 250px;
+    padding: 20px;
+    background-color: var(--content-bg-color);
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+    flex-shrink: 0;
+}
+
+.sidebar-title {
+    color: var(--primary-color);
+    margin-bottom: 15px;
+    border-bottom: 2px solid var(--primary-color);
+    padding-bottom: 5px;
+}
+
+#lesson-list {
+    list-style: none;
+}
+
+#lesson-list li {
+    margin-bottom: 8px;
+    cursor: pointer;
+    padding: 8px 10px;
+    border-radius: 4px;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+#lesson-list li:hover {
+    background-color: #e0e0e0;
+}
+
+#lesson-list li.active {
+    background-color: var(--primary-color);
+    color: white;
+    font-weight: 600;
+}
+
+/* Área de Contenido Principal */
+.content-area {
+    flex-grow: 1;
+    margin-left: 20px;
+    padding: 30px;
+    background-color: var(--content-bg-color);
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+}
+
+.content-area h2 {
+    color: var(--primary-color);
+    margin-bottom: 20px;
+}
+
+.theory-section, .scenario-section {
+    margin-bottom: 30px;
+}
+
+.theory-section h3, .scenario-section h3 {
+    color: var(--secondary-color);
+    margin-bottom: 10px;
+}
+
+.challenge-text {
+    background-color: #fff3e0;
+    padding: 15px;
+    border-left: 4px solid var(--secondary-color);
+    margin-bottom: 15px;
+    font-weight: 500;
+}
+
+/* Editor de Código */
+.code-editor-container {
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-top: 15px;
+}
+
+.editor-header {
+    background-color: #444;
+    color: white;
+    padding: 8px 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: 'Roboto Mono', monospace;
+    font-size: 0.9em;
+}
+
+.code-input {
+    width: 100%;
+    height: 150px;
+    padding: 15px;
+    border: none;
+    background-color: var(--code-bg-color);
+    color: #f8f8f2; /* Color de texto claro para código */
+    font-family: 'Roboto Mono', monospace;
+    font-size: 1em;
+    resize: vertical;
+    outline: none;
+}
+
+/* Botón de Ejecutar/Verificar */
+.run-button {
+    background-color: var(--secondary-color);
+    color: white;
+    border: none;
+    padding: 5px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color 0.2s;
+}
+
+.run-button:hover {
+    background-color: #e68a00;
+}
+
+/* Retroalimentación (Feedback) */
+.feedback {
+    padding: 15px;
+    margin-top: 20px;
+    border-radius: 4px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.feedback.success {
+    background-color: #e8f5e9;
+    color: var(--success-color);
+    border: 1px solid var(--success-color);
+}
+
+.feedback.error {
+    background-color: #ffebee;
+    color: var(--error-color);
+    border: 1px solid var(--error-color);
+}
+
+/* Botón de Avance */
+.next-button {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 600;
+    margin-top: 15px;
+    transition: background-color 0.2s;
+    float: right;
+}
+
+.next-button:hover {
+    background-color: #303f9f;
+}
+
+.hidden {
+    display: none;
+}
+
+/* Pie de Página */
+.footer {
+    text-align: center;
+    padding: 15px;
+    margin-top: 20px;
+    font-size: 0.9em;
+    color: #777;
+}
+
+/* Media Queries para Responsive Design (Móvil) */
+@media (max-width: 768px) {
+    .app-container {
+        flex-direction: column;
+        padding: 0 10px;
+    }
+
+    .sidebar {
+        width: 100%;
+        margin-bottom: 20px;
+    }
+
+    .content-area {
+        margin-left: 0;
+        padding: 20px;
+    }
+}
